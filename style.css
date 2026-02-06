@@ -260,6 +260,12 @@ body {
     color: oklch(65% 0.25 20);
 }
 
+.details-text {
+    font-size: 0.9rem;
+    color: oklch(50% 0.1 240);
+    margin-top: 8px;
+}
+
 #escalation-status .status-text.alert {
     color: oklch(65% 0.25 20);
     animation: pulse 1.5s infinite;

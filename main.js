@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const newTaskInput = document.getElementById('new-task-input');
     const addTaskBtn = document.getElementById('add-task-btn');
     const voiceTranscript = document.getElementById('voice-transcript');
+    const checkInDetails = document.getElementById('check-in-details');
 
     // --- State ---
     let checkedIn = false;
@@ -55,6 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 error: "Sorry, a voice error occurred. Please try again.",
                 transcript: (t) => `Heard: "${t}"`
             },
+            checkInDetails: (t, l) => `at ${t} from ${l}`,
+            locationError: "Location not available",
             okKeywords: ["i'm ok", 'i am ok', 'okay', 'yes', 'fine'], notOkKeywords: ["i'm not ok", 'i am not ok', 'not okay', 'no', 'help']
         },
         zh: {
@@ -73,6 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 error: "抱歉，发生语音错误。请重试。",
                 transcript: (t) => `听到： “${t}”`
             },
+            checkInDetails: (t, l) => `于 ${t} 从 ${l}`,
+            locationError: "无法获取位置",
             okKeywords: ['我很好', '好的', '可以'], notOkKeywords: ['我不好', '不行', '救命']
         },
         ms: {
@@ -91,6 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 error: "Maaf, ralat suara berlaku. Sila cuba lagi.",
                 transcript: (t) => `Didengar: "${t}"`
             },
+            checkInDetails: (t, l) => `pada ${t} dari ${l}`,
+            locationError: "Lokasi tidak tersedia",
             okKeywords: ['saya ok', 'ok', 'baik'], notOkKeywords: ['saya tidak ok', 'tidak ok', 'bantuan']
         },
         ta: {
@@ -109,6 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 error: "மன்னிக்கவும், குரல் பிழை ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்.",
                 transcript: (t) => `கேட்டது: "${t}"`
             },
+            checkInDetails: (t, l) => `${t} மணிக்கு ${l} இருந்து`,
+            locationError: "இடம் கிடைக்கவில்லை",
             okKeywords: ['நான் நலம்', 'சரி', 'ஆம்'], notOkKeywords: ['நான் சரியில்லை', 'இல்லை', 'உதவி']
         }
     };
@@ -155,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             aliveStatusText.textContent = lang.notOk;
         } else {
             aliveStatusText.textContent = lang.pending;
+            checkInDetails.textContent = ''; // Clear details if pending
         }
 
         routineStatusText.textContent = lang.routineNormal;
@@ -177,6 +187,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleCheckIn() {
         if(checkedIn) return;
         checkedIn = true;
+        
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const { latitude, longitude } = position.coords;
+                // In a real app, you'd use a reverse geocoding service.
+                // For this demo, we'll just show the coordinates.
+                const locationString = `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
+                checkInDetails.textContent = translations[currentLanguage].checkInDetails(timeString, locationString);
+            }, error => {
+                checkInDetails.textContent = translations[currentLanguage].checkInDetails(timeString, translations[currentLanguage].locationError);
+            });
+        } else {
+            checkInDetails.textContent = translations[currentLanguage].checkInDetails(timeString, translations[currentLanguage].locationError);
+        }
+
         aliveStatusText.classList.remove('not-ok');
         aliveStatusText.classList.add('confirmed');
         escalationStatusText.classList.remove('alert');
@@ -187,6 +215,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleNotOk() {
         if(checkedIn) return;
+
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        checkInDetails.textContent = translations[currentLanguage].checkInDetails(timeString, translations[currentLanguage].notOk);
+
         aliveStatusText.classList.add('not-ok');
         escalationStatusText.classList.add('alert');
         callParentBtn.classList.remove('hidden');
@@ -203,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         escalationStatusText.classList.remove('alert');
         callParentBtn.classList.add('hidden');
         voiceTranscript.textContent = '';
+        checkInDetails.textContent = '';
         updateLanguage(localStorage.getItem('preferredLanguage') || 'en');
     }
 

@@ -1,37 +1,31 @@
-This Ambient Reassurance App is designed to provide a sense of connection and peace of mind for a parent and their caregiver. The app offers a simple way for the parent to signal they are okay, while also allowing the caregiver to monitor their well-being without being intrusive.
+# Ambient Reassurance App
 
-## Key Features
+This Ambient Reassurance App is a web-based tool designed to provide peace of mind for caregivers and a simple way for their loved ones (referred to as "parents") to signal that they are okay. It features a dual-dashboard interface, multilingual support, and several key functionalities to ensure the well-being of the parent.
 
-*   **Parent Dashboard:** A simple interface for the parent to check in, with a clear "I'm OK" button. It also includes a customizable list of daily reminders to help the parent keep track of their self-care tasks.
-*   **Caregiver Dashboard:** An at-a-glance view of the parent's status, including their check-in confirmation, routine patterns, and any exceptions that may require attention.
-*   **Customizable Reminders:** The daily reminders can be easily customized to fit the parent's needs. New reminders can be added, and existing ones can be edited or removed.
-*   **Check-In Deadline:** The app includes a customizable deadline for the parent to check in. If the deadline is missed, the caregiver is notified so they can follow up.
-*   **Multi-Language Support:** The app can be displayed in English, Chinese (Simplified), Malay, and Tamil.
-*   **Voice Commands:** The parent can use their voice to check in. The app understands "I'm OK" and "I'm Not OK" in all supported languages.
-*   **Text-to-Speech Feedback:** The app provides audio feedback for check-ins, announcing the status in the selected language.
+## Overview of Features
 
-## Customization
+*   **Parent Dashboard**: A simple, accessible interface for the parent. It includes a large clock, prominent "I'm OK" and "I'm NOT OK" buttons, a voice command option, and a customizable list of daily self-care reminders.
+*   **Caregiver Dashboard**: A monitoring interface that provides an at-a-glance status of the parent, including their check-in status, routine patterns, self-care task completion, and any alerts that require action.
+*   **Multi-Language Support**: The entire application interface can be switched between English, Chinese (Simplified), Malay, and Tamil.
+*   **Voice Commands**: The parent can use their voice to check in by saying "I'm OK" or "I'm Not OK" in their selected language. The app provides real-time feedback on the voice command status.
+*   **Text-to-Speech (TTS)**: When the parent checks in, the app provides audible confirmation in the selected language.
+*   **Check-In with Timestamp & Location**: When a parent checks in, the app captures and displays the time and their geographical location (with permission) on the caregiver's dashboard for added reassurance.
+*   **Customizable Reminders**: The list of daily self-care tasks can be easily managed directly within the app.
+*   **Automatic Escalation**: If the parent misses the daily check-in deadline (configurable), the app automatically triggers an alert on the caregiver's dashboard.
 
-### Daily Reminders
+## Design and Style
 
-The list of daily reminders can be modified directly in the app. To add a new reminder, simply type it into the input field on the Parent dashboard and click the "Add" button. To remove a reminder, click the "Delete" button next to it.
+*   **Aesthetics**: The app uses a clean, modern design with a light and airy color palette (using the `oklch` color model for modern, vibrant colors). It features soft shadows, rounded corners, and clear typography to create a calming and intuitive user experience.
+*   **Responsiveness**: The layout is fully responsive and adapts to different screen sizes, ensuring it works well on both desktop and mobile devices.
+*   **Interactivity**: Buttons and interactive elements provide clear visual feedback, such as animations and color changes, to acknowledge user actions.
 
-### Check-In Time
+## Current Plan: Fixes and New Features
 
-The check-in deadline can be adjusted by changing the `CHECK_IN_DEADLINE_HOUR` constant in the `main.js` file. The time is set in 24-hour format, so for example, `10` would be 10:00 AM.
+This section outlines the plan for the latest round of updates.
 
-### Language
-
-The display language can be changed using the dropdown menu on the Parent dashboard. The selected language is saved in the browser's local storage.
-
-## Current Plan
-
-My plan is to enhance the app by allowing users to add new reminders directly from the Parent dashboard. This will make the app more flexible and user-friendly.
-
-1.  **Update `index.html`:** Add a new input field and an "Add Task" button to the parent's dashboard.
-2.  **Update `main.js`:** Add an event listener to the "Add Task" button to add the new reminder to the checklist and save it to local storage.
-3.  **Update `style.css`:** Style the new input field and button to match the app's design.
-4.  **Update `blueprint.md`:** Reflect these new customization options.
-5.  **Fix Refresh Bug & Add Delete Functionality:** I will fix a bug where the reminder list doesn't automatically refresh after adding a new item. I will also add a "Delete" button to each reminder, allowing for easy removal.
-6.  **Add Multi-Language Support:** I will add a language switcher to allow the app to be displayed in Chinese (Simplified), Malay, and Tamil.
-7.  **Add Voice Commands and Text-to-Speech:** I will add the ability for the parent to use voice commands to check in, and the app will provide text-to-speech feedback.
+1.  **Fix Language Refresh Bug**: The previous implementation did not consistently refresh all UI elements when the language was changed. This has been fixed by creating a centralized `refreshUI()` function that correctly updates all text and component states.
+2.  **Add Text-to-Speech (TTS)**: Implemented a `speak()` function that provides audio feedback when the "I'm OK" or "I'm NOT OK" buttons are pressed.
+3.  **Implement Robust Voice Commands**: The original voice recording feature has been replaced with a full-fledged voice command system.
+    *   The system now actively listens for and interprets "I'm OK" and "I'm Not OK" commands.
+    *   It includes comprehensive error handling and visual feedback for microphone permissions, no-speech events, and unrecognized commands.
+4.  **Add Timestamp and Location on Check-in**: To provide more context for the caregiver, the application will now capture and display the time and the parent's geographical location when they check in. This information will appear on the caregiver's dashboard.
