@@ -57,7 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 transcript: (t) => `Heard: "${t}"`
             },
             checkInDetails: (t, l) => `at ${t} from ${l}`,
-            locationError: "Location not available",
+            checkInNotOkDetails: (t) => `Alert raised at ${t}`,
+            locationError: {
+                unavailable: "Location not available",
+                permissionDenied: "Location permission was denied.",
+                positionUnavailable: "Location could not be determined.",
+                timeout: "Request to get location timed out.",
+                geocodingFailed: "Failed to find a human-readable address."
+            },
             okKeywords: ["i'm ok", 'i am ok', 'okay', 'yes', 'fine'], notOkKeywords: ["i'm not ok", 'i am not ok', 'not okay', 'no', 'help']
         },
         zh: {
@@ -77,7 +84,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 transcript: (t) => `听到： “${t}”`
             },
             checkInDetails: (t, l) => `于 ${t} 从 ${l}`,
-            locationError: "无法获取位置",
+            checkInNotOkDetails: (t) => `警报于 ${t} 发出`,
+            locationError: {
+                unavailable: "无法获取位置",
+                permissionDenied: "位置权限被拒绝。",
+                positionUnavailable: "无法确定位置。",
+                timeout: "获取位置请求超时。",
+                geocodingFailed: "查找可读地址失败。"
+            },
             okKeywords: ['我很好', '好的', '可以'], notOkKeywords: ['我不好', '不行', '救命']
         },
         ms: {
@@ -97,7 +111,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 transcript: (t) => `Didengar: "${t}"`
             },
             checkInDetails: (t, l) => `pada ${t} dari ${l}`,
-            locationError: "Lokasi tidak tersedia",
+            checkInNotOkDetails: (t) => `Amaran dibangkitkan pada ${t}`,
+             locationError: {
+                unavailable: "Lokasi tidak tersedia",
+                permissionDenied: "Kebenaran lokasi telah ditolak.",
+                positionUnavailable: "Lokasi tidak dapat ditentukan.",
+                timeout: "Permintaan untuk mendapatkan lokasi tamat masa.",
+                geocodingFailed: "Gagal mencari alamat yang boleh dibaca."
+            },
             okKeywords: ['saya ok', 'ok', 'baik'], notOkKeywords: ['saya tidak ok', 'tidak ok', 'bantuan']
         },
         ta: {
@@ -117,7 +138,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 transcript: (t) => `கேட்டது: "${t}"`
             },
             checkInDetails: (t, l) => `${t} மணிக்கு ${l} இருந்து`,
-            locationError: "இடம் கிடைக்கவில்லை",
+            checkInNotOkDetails: (t) => `எச்சரிக்கை ${t} மணிக்கு எழுப்பப்பட்டது`,
+            locationError: {
+                unavailable: "இடம் கிடைக்கவில்லை",
+                permissionDenied: "இடத்திற்கான அனுமதி மறுக்கப்பட்டது.",
+                positionUnavailable: "இருப்பிடத்தை தீர்மானிக்க முடியவில்லை.",
+                timeout: "இருப்பிடத்தைப் பெறுவதற்கான கோரிக்கை நேரம் முடிந்தது.",
+                geocodingFailed: "மனிதன் படிக்கக்கூடிய முகவரியைக் கண்டுபிடிக்கத் தவறிவிட்டது."
+            },
             okKeywords: ['நான் நலம்', 'சரி', 'ஆம்'], notOkKeywords: ['நான் சரியில்லை', 'இல்லை', 'உதவி']
         }
     };
@@ -185,32 +213,89 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. State Handlers
     function handleCheckIn() {
-        if(checkedIn) return;
-        checkedIn = true;
+        if (checkedIn) return;
         
+        // Prevent multiple clicks while processing
+        checkInBtn.disabled = true;
+        recordAudioBtn.disabled = true;
+
         const now = new Date();
         const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const setCheckInDetails = (locationString, isError = false) => {
+            checkInDetails.textContent = isError 
+                ? locationString 
+                : translations[currentLanguage].checkInDetails(timeString, locationString);
+            
+            if (isError) {
+                checkInDetails.classList.add('error');
+                // Re-enable buttons if there was a location error
+                checkInBtn.disabled = false;
+                recordAudioBtn.disabled = false;
+            } else {
+                checkInDetails.classList.remove('error');
+                checkedIn = true; // Only finalize check-in on success
+                aliveStatusText.classList.remove('not-ok');
+                aliveStatusText.classList.add('confirmed');
+                escalationStatusText.classList.remove('alert');
+                callParentBtn.classList.add('hidden');
+                voiceTranscript.textContent = '';
+                refreshUI(); // Final UI update
+            }
+        };
 
         if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition(position => {
                 const { latitude, longitude } = position.coords;
-                // In a real app, you'd use a reverse geocoding service.
-                // For this demo, we'll just show the coordinates.
-                const locationString = `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
-                checkInDetails.textContent = translations[currentLanguage].checkInDetails(timeString, locationString);
-            }, error => {
-                checkInDetails.textContent = translations[currentLanguage].checkInDetails(timeString, translations[currentLanguage].locationError);
-            });
-        } else {
-            checkInDetails.textContent = translations[currentLanguage].checkInDetails(timeString, translations[currentLanguage].locationError);
-        }
+                
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data && data.address) {
+                            const locationParts = [
+                                data.address.road,
+                                data.address.neighbourhood,
+                                data.address.suburb,
+                                data.address.city,
+                                data.address.country
+                            ].filter(Boolean); // Filter out null/undefined parts
+                            const locationString = locationParts.slice(0, 2).join(', ');
+                            setCheckInDetails(locationString);
+                        } else {
+                           setCheckInDetails(translations[currentLanguage].locationError.geocodingFailed, true);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Reverse geocoding error:", error);
+                        setCheckInDetails(translations[currentLanguage].locationError.geocodingFailed, true);
+                    });
 
-        aliveStatusText.classList.remove('not-ok');
-        aliveStatusText.classList.add('confirmed');
-        escalationStatusText.classList.remove('alert');
-        callParentBtn.classList.add('hidden');
-        voiceTranscript.textContent = '';
-        refreshUI();
+            }, error => {
+                let errorMsg;
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMsg = translations[currentLanguage].locationError.permissionDenied;
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMsg = translations[currentLanguage].locationError.positionUnavailable;
+                        break;
+                    case error.TIMEOUT:
+                        errorMsg = translations[currentLanguage].locationError.timeout;
+                        break;
+                    default:
+                        errorMsg = translations[currentLanguage].locationError.unavailable;
+                        break;
+                }
+                 setCheckInDetails(errorMsg, true);
+            }, { timeout: 10000 }); // Add a timeout
+        } else {
+            setCheckInDetails(translations[currentLanguage].locationError.unavailable, true);
+        }
     }
 
     function handleNotOk() {
@@ -218,7 +303,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const now = new Date();
         const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        checkInDetails.textContent = translations[currentLanguage].checkInDetails(timeString, translations[currentLanguage].notOk);
+        checkInDetails.textContent = translations[currentLanguage].checkInNotOkDetails(timeString);
+        checkInDetails.classList.remove('error');
+
 
         aliveStatusText.classList.add('not-ok');
         escalationStatusText.classList.add('alert');
@@ -237,6 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
         callParentBtn.classList.add('hidden');
         voiceTranscript.textContent = '';
         checkInDetails.textContent = '';
+        checkInDetails.classList.remove('error');
         updateLanguage(localStorage.getItem('preferredLanguage') || 'en');
     }
 
@@ -367,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkDeadline() {
-        const now = new new Date();
+        const now = new Date();
         if (now.getHours() >= CHECK_IN_DEADLINE_HOUR && !checkedIn) {
             if (!pinged) {
                 pingSound.play();

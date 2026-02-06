@@ -9,7 +9,7 @@ This Ambient Reassurance App is a web-based tool designed to provide peace of mi
 *   **Multi-Language Support**: The entire application interface can be switched between English, Chinese (Simplified), Malay, and Tamil.
 *   **Voice Commands**: The parent can use their voice to check in by saying "I'm OK" or "I'm Not OK" in their selected language. The app provides real-time feedback on the voice command status.
 *   **Text-to-Speech (TTS)**: When the parent checks in, the app provides audible confirmation in the selected language.
-*   **Check-In with Timestamp & Location**: When a parent checks in, the app captures and displays the time and their geographical location (with permission) on the caregiver's dashboard for added reassurance.
+*   **Check-In with Human-Readable Location**: When a parent checks in, the app captures their geographical coordinates and uses a reverse geocoding service (OpenStreetMap) to display a user-friendly address (e.g., street and city) along with the timestamp on the caregiver's dashboard.
 *   **Customizable Reminders**: The list of daily self-care tasks can be easily managed directly within the app.
 *   **Automatic Escalation**: If the parent misses the daily check-in deadline (configurable), the app automatically triggers an alert on the caregiver's dashboard.
 
@@ -23,9 +23,10 @@ This Ambient Reassurance App is a web-based tool designed to provide peace of mi
 
 This section outlines the plan for the latest round of updates.
 
-1.  **Fix Language Refresh Bug**: The previous implementation did not consistently refresh all UI elements when the language was changed. This has been fixed by creating a centralized `refreshUI()` function that correctly updates all text and component states.
-2.  **Add Text-to-Speech (TTS)**: Implemented a `speak()` function that provides audio feedback when the "I'm OK" or "I'm NOT OK" buttons are pressed.
-3.  **Implement Robust Voice Commands**: The original voice recording feature has been replaced with a full-fledged voice command system.
-    *   The system now actively listens for and interprets "I'm OK" and "I'm Not OK" commands.
-    *   It includes comprehensive error handling and visual feedback for microphone permissions, no-speech events, and unrecognized commands.
-4.  **Add Timestamp and Location on Check-in**: To provide more context for the caregiver, the application will now capture and display the time and the parent's geographical location when they check in. This information will appear on the caregiver's dashboard.
+1.  **Fix Language Refresh Bug**: Addressed an issue where UI elements did not consistently update after a language change.
+2.  **Add Text-to-Speech (TTS)**: Implemented audio feedback for check-in actions.
+3.  **Implement Robust Voice Commands**: Upgraded the voice feature to a full command system with better feedback and error handling.
+4.  **Implement Human-Readable Location**: Replaced GPS coordinates with a user-friendly address from the OpenStreetMap API.
+5.  **Improve Location Error Handling**:
+    *   **Detailed Error Messages**: Instead of a generic "Location not available" message, the UI now displays specific reasons for failure (e.g., "Location permission was denied," "Request to get location timed out").
+    *   **Fix Button Locking Logic**: Corrected a flaw where the check-in buttons would become disabled even if the location lookup failed. The buttons now remain active on error, allowing the user to retry.
