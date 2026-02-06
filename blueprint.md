@@ -1,41 +1,28 @@
-# Project Blueprint: Ambient Reassurance App
+This Ambient Reassurance App is designed to provide a sense of connection and peace of mind for a parent and their caregiver. The app offers a simple way for the parent to signal they are okay, while also allowing the caregiver to monitor their well-being without being intrusive.
 
-## Overview
+## Key Features
 
-This document outlines the plan for a mobile-first web app (PWA) designed for elderly individuals living alone and their adult children caregivers. The app's core purpose is to provide ambient reassurance to caregivers without constant monitoring, escalating only when patterns indicate a real risk.
+*   **Parent Dashboard:** A simple interface for the parent to check in, with a clear "I'm OK" button. It also includes a customizable list of daily reminders to help the parent keep track of their self-care tasks.
+*   **Caregiver Dashboard:** An at-a-glance view of the parent's status, including their check-in confirmation, routine patterns, and any exceptions that may require attention.
+*   **Customizable Reminders:** The daily reminders can be easily customized to fit the parent's needs. New reminders can be added, and existing ones can be edited or removed.
+*   **Check-In Deadline:** The app includes a customizable deadline for the parent to check in. If the deadline is missed, the caregiver is notified so they can follow up.
 
-## Core Principles
+## Customization
 
-*   **Simplicity:** Extremely simple interface with large text and buttons.
-*   **Passive Signals:** Prioritize passive signals over active reporting.
-*   **Exception-Based Escalation:** Alerts are triggered only when patterns deviate significantly.
+### Daily Reminders
 
-## Implemented Features & Design
+The list of daily reminders can be modified directly in the app. To add a new reminder, simply type it into the input field on the Parent dashboard and click the "Add" button. To remove a reminder, click the "Delete" button next to it.
 
-### UI/UX
-*   **Layout:** A single-page application with two distinct views: one for the "Parent" and one for the "Caregiver".
-*   **Parent View:**
-    *   A large, prominent "I'm OK" button for daily check-ins.
-    *   A simple self-care checklist.
-    *   A digital clock to help with time orientation.
-    *   Large, readable fonts and high-contrast colors.
-*   **Caregiver View:**
-    *   Status indicators for "Alive & Okay", "Routine Normal", and "Self-care".
-    *   A clean, easy-to-read summary of the parent's status.
-*   **Styling:**
-    *   **Color Palette:** A calming and accessible color scheme.
-    *   **Typography:** Large, clear fonts for readability.
-    *   **Visual Effects:** Subtle shadows to create a sense of depth and lift interactive elements.
+### Check-In Time
 
-### Google Analytics
-*   **Google Tag (gtag.js):** Integrated into `index.html` for basic analytics tracking.
-
-### Core Functionality
-
-*   **Daily Check-in:** The "I'm OK" button updates the "Alive & Okay" status in the caregiver's view.
-*   **Self-Care Checklist:** The parent can check off items on their to-do list, and the caregiver's view is updated accordingly.
-*   **Check-in Deadline:** If the parent has not checked in by 12:00 PM, the "Alive & Okay" status in the caregiver's view will change to "Not OK".
+The check-in deadline can be adjusted by changing the `CHECK_IN_DEADLINE_HOUR` constant in the `main.js` file. The time is set in 24-hour format, so for example, `10` would be 10:00 AM.
 
 ## Current Plan
 
-This phase focused on adding a clock to the Parent view for better time orientation, updating the dashboard titles to "Parent" and "Caregiver", implementing the 12:00 PM check-in deadline, and integrating Google Analytics. The next step is to integrate Firebase for data persistence and real-time communication between the two views.
+My plan is to enhance the app by allowing users to add new reminders directly from the Parent dashboard. This will make the app more flexible and user-friendly.
+
+1.  **Update `index.html`:** Add a new input field and an "Add Task" button to the parent's dashboard.
+2.  **Update `main.js`:** Add an event listener to the "Add Task" button to add the new reminder to the checklist and save it to local storage.
+3.  **Update `style.css`:** Style the new input field and button to match the app's design.
+4.  **Update `blueprint.md`:** Reflect these new customization options.
+5.  **Fix Refresh Bug & Add Delete Functionality:** I will fix a bug where the reminder list doesn't automatically refresh after adding a new item. I will also add a "Delete" button to each reminder, allowing for easy removal.

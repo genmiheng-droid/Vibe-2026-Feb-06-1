@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const PARENT_PHONE_NUMBER = '12345678';
     const CAREGIVER_PHONE_NUMBER = '87654321';
     const CHECK_IN_DEADLINE_HOUR = 10; // Use 24-hour format (e.g., 10 for 10 AM, 14 for 2 PM)
-    const SELF_CARE_TASKS = [
+    const DEFAULT_SELF_CARE_TASKS = [
         'Ate breakfast',
         'Drank enough water',
         'Took morning medicine'
@@ -21,10 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const alertSound = document.getElementById('alert-sound');
     const pingSound = document.getElementById('ping-sound');
     const selfCareList = document.getElementById('self-care-list');
+    const newTaskInput = document.getElementById('new-task-input');
+    const addTaskBtn = document.getElementById('add-task-btn');
 
     // --- State ---
     let checkedIn = false;
     let pinged = false;
+    let selfCareTasks = [];
 
     // --- Functions ---
 
@@ -32,15 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function resetState() {
         checkedIn = false;
         pinged = false;
-
-        // Reset Parent view
         checkInBtn.textContent = "I'm OK";
         checkInBtn.disabled = false;
         checkInBtn.style.backgroundColor = 'oklch(65% 0.2 150)';
         notOkBtn.disabled = false;
-        document.querySelectorAll('#self-care-list input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
-
-        // Reset Caregiver view
         aliveStatusText.textContent = 'Pending';
         aliveStatusText.classList.remove('confirmed', 'not-ok');
         selfCareStatusText.textContent = 'Pending';
@@ -48,27 +46,70 @@ document.addEventListener('DOMContentLoaded', () => {
         escalationStatusText.textContent = 'All clear';
         escalationStatusText.classList.remove('alert');
         callParentBtn.classList.add('hidden');
-
+        populateSelfCareList();
         updateSelfCareStatus();
     }
 
-    // 1. Populate Self-Care List
+    // 1. Task Management
+    function saveTasks() {
+        localStorage.setItem('selfCareTasks', JSON.stringify(selfCareTasks));
+    }
+
+    function loadTasks() {
+        const storedTasks = localStorage.getItem('selfCareTasks');
+        selfCareTasks = storedTasks ? JSON.parse(storedTasks) : [...DEFAULT_SELF_CARE_TASKS];
+    }
+
+    function addNewTask() {
+        const taskText = newTaskInput.value.trim();
+        if (taskText) {
+            selfCareTasks.push(taskText);
+            saveTasks();
+            populateSelfCareList(); // This will now correctly refresh the list
+            updateSelfCareStatus();
+            newTaskInput.value = '';
+        }
+    }
+
+    function deleteTask(index) {
+        selfCareTasks.splice(index, 1);
+        saveTasks();
+        populateSelfCareList();
+        updateSelfCareStatus();
+    }
+
     function populateSelfCareList() {
-        selfCareList.innerHTML = ''; // Clear existing tasks
-        SELF_CARE_TASKS.forEach((task, index) => {
+        selfCareList.innerHTML = ''; 
+        selfCareTasks.forEach((task, index) => {
             const listItem = document.createElement('li');
+            
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.id = `task-${index}`;
             checkbox.addEventListener('change', updateSelfCareStatus);
+            
             const label = document.createElement('label');
             label.htmlFor = `task-${index}`;
             label.textContent = task;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.classList.add('delete-btn');
+            deleteBtn.addEventListener('click', () => deleteTask(index));
+
             listItem.appendChild(checkbox);
             listItem.appendChild(label);
+            listItem.appendChild(deleteBtn);
             selfCareList.appendChild(listItem);
         });
     }
+
+    addTaskBtn.addEventListener('click', addNewTask);
+    newTaskInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addNewTask();
+        }
+    });
 
     // 2. Update Clock
     function updateClock() {
@@ -115,7 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        if (completedTasks === 0) {
+        if (totalTasks === 0) {
+            selfCareStatusText.textContent = 'No tasks yet';
+             selfCareStatusText.classList.remove('completed');
+        } else if (completedTasks === 0) {
             selfCareStatusText.textContent = 'Pending';
             selfCareStatusText.classList.remove('completed');
         } else if (completedTasks < totalTasks) {
@@ -150,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initializations ---
     callParentBtn.href = `tel:${PARENT_PHONE_NUMBER}`;
-    populateSelfCareList();
+    loadTasks();
     resetState();
     updateClock();
     setInterval(updateClock, 1000);

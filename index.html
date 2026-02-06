@@ -6,15 +6,6 @@
     <title>Ambient Reassurance App</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9FLDJJ2K3"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-M9FLDJJ2K3');
-    </script>
 </head>
 <body>
     <div class="app-container">
@@ -28,6 +19,10 @@
             <div class="self-care-container">
                 <h2>Today's Reminders</h2>
                 <ul id="self-care-list" class="self-care-list"></ul>
+                <div class="add-task-container">
+                    <input type="text" id="new-task-input" placeholder="Add a new reminder...">
+                    <button id="add-task-btn">Add</button>
+                </div>
             </div>
         </div>
 
