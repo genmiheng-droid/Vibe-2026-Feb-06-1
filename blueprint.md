@@ -27,6 +27,9 @@ This document outlines the plan for a mobile-first web app (PWA) designed for el
     *   **Typography:** Large, clear fonts for readability.
     *   **Visual Effects:** Subtle shadows to create a sense of depth and lift interactive elements.
 
+### Google Analytics
+*   **Google Tag (gtag.js):** Integrated into `index.html` for basic analytics tracking.
+
 ### Core Functionality
 
 *   **Daily Check-in:** The "I'm OK" button updates the "Alive & Okay" status in the caregiver's view.
@@ -35,4 +38,4 @@ This document outlines the plan for a mobile-first web app (PWA) designed for el
 
 ## Current Plan
 
-This phase focused on adding a clock to the Parent view for better time orientation, updating the dashboard titles to "Parent" and "Caregiver", and implementing the 12:00 PM check-in deadline. The next step is to integrate Firebase for data persistence and real-time communication between the two views.
+This phase focused on adding a clock to the Parent view for better time orientation, updating the dashboard titles to "Parent" and "Caregiver", implementing the 12:00 PM check-in deadline, and integrating Google Analytics. The next step is to integrate Firebase for data persistence and real-time communication between the two views.

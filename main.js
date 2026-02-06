@@ -3,11 +3,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Configuration ---
     const PARENT_PHONE_NUMBER = '12345678';
     const CAREGIVER_PHONE_NUMBER = '87654321';
+    const CHECK_IN_DEADLINE_HOUR = 10; // Use 24-hour format (e.g., 10 for 10 AM, 14 for 2 PM)
+    const SELF_CARE_TASKS = [
+        'Ate breakfast',
+        'Drank enough water',
+        'Took morning medicine'
+    ];
 
     // --- Element Selectors ---
     const checkInBtn = document.getElementById('check-in-btn');
     const notOkBtn = document.getElementById('not-ok-btn');
-    const selfCareCheckboxes = document.querySelectorAll('#self-care-list input[type="checkbox"]');
     const clockElement = document.getElementById('clock');
     const aliveStatusText = document.getElementById('alive-status-text');
     const selfCareStatusText = document.getElementById('self-care-status-text');
@@ -15,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const callParentBtn = document.getElementById('call-parent-btn');
     const alertSound = document.getElementById('alert-sound');
     const pingSound = document.getElementById('ping-sound');
+    const selfCareList = document.getElementById('self-care-list');
 
     // --- State ---
     let checkedIn = false;
@@ -32,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         checkInBtn.disabled = false;
         checkInBtn.style.backgroundColor = 'oklch(65% 0.2 150)';
         notOkBtn.disabled = false;
-        selfCareCheckboxes.forEach(checkbox => checkbox.checked = false);
+        document.querySelectorAll('#self-care-list input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
 
         // Reset Caregiver view
         aliveStatusText.textContent = 'Pending';
@@ -46,7 +52,25 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSelfCareStatus();
     }
 
-    // 1. Update Clock
+    // 1. Populate Self-Care List
+    function populateSelfCareList() {
+        selfCareList.innerHTML = ''; // Clear existing tasks
+        SELF_CARE_TASKS.forEach((task, index) => {
+            const listItem = document.createElement('li');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `task-${index}`;
+            checkbox.addEventListener('change', updateSelfCareStatus);
+            const label = document.createElement('label');
+            label.htmlFor = `task-${index}`;
+            label.textContent = task;
+            listItem.appendChild(checkbox);
+            listItem.appendChild(label);
+            selfCareList.appendChild(listItem);
+        });
+    }
+
+    // 2. Update Clock
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -54,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clockElement.textContent = `${hours}:${minutes}`;
     }
 
-    // 2. "I'm OK" Check-in
+    // 3. "I'm OK" Check-in
     checkInBtn.addEventListener('click', () => {
         checkedIn = true;
         aliveStatusText.textContent = 'Confirmed for today';
@@ -66,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         checkInBtn.style.backgroundColor = 'oklch(75% 0.18 160)';
     });
 
-    // 3. "I'm NOT OK" Alert
+    // 4. "I'm NOT OK" Alert
     notOkBtn.addEventListener('click', () => {
         aliveStatusText.textContent = 'NOT OK';
         aliveStatusText.classList.add('not-ok');
@@ -74,19 +98,15 @@ document.addEventListener('DOMContentLoaded', () => {
         escalationStatusText.classList.add('alert');
         callParentBtn.classList.remove('hidden');
         alertSound.play();
-        // Automatically send SMS to caregiver
         const message = encodeURIComponent("Parent requires immediate attention. Please call them.");
         window.location.href = `sms:${CAREGIVER_PHONE_NUMBER}?body=${message}`;
         checkInBtn.disabled = true;
         notOkBtn.disabled = true;
     });
 
-    // 4. Self-Care Checklist
-    selfCareCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateSelfCareStatus);
-    });
-
+    // 5. Update Self-Care Status
     function updateSelfCareStatus() {
+        const selfCareCheckboxes = document.querySelectorAll('#self-care-list input[type="checkbox"]');
         const totalTasks = selfCareCheckboxes.length;
         let completedTasks = 0;
         selfCareCheckboxes.forEach(cb => {
@@ -107,25 +127,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 5. Check-in Deadline and Ping
+    // 6. Check-in Deadline and Ping
     function checkDeadline() {
         const now = new Date();
         const hours = now.getHours();
 
-        // Ping at 10 AM if not checked in
-        if (hours >= 10 && !checkedIn && !pinged) {
+        if (hours >= CHECK_IN_DEADLINE_HOUR && !checkedIn && !pinged) {
             pingSound.play();
-            pinged = true; // Ensure ping only happens once
+            pinged = true;
         }
 
-        // If it's 10 AM or later and still no check-in
-        if (hours >= 10 && !checkedIn) {
+        if (hours >= CHECK_IN_DEADLINE_HOUR && !checkedIn) {
             aliveStatusText.textContent = 'Not OK';
             aliveStatusText.classList.add('not-ok');
             escalationStatusText.textContent = 'Check-in Missed';
             escalationStatusText.classList.add('alert');
             callParentBtn.classList.remove('hidden');
-            // Automatically send SMS to caregiver
             const message = encodeURIComponent("Parent missed their scheduled check-in. Please call them.");
             window.location.href = `sms:${CAREGIVER_PHONE_NUMBER}?body=${message}`;
         }
@@ -133,13 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initializations ---
     callParentBtn.href = `tel:${PARENT_PHONE_NUMBER}`;
-    resetState(); // Reset the app state on every page load
+    populateSelfCareList();
+    resetState();
     updateClock();
     setInterval(updateClock, 1000);
 
     checkDeadline();
-    setInterval(checkDeadline, 60000); // Check every minute
-
-    updateSelfCareStatus();
+    setInterval(checkDeadline, 60000);
 
 });

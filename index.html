@@ -6,6 +6,15 @@
     <title>Ambient Reassurance App</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9FLDJJ2K3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-M9FLDJJ2K3');
+    </script>
 </head>
 <body>
     <div class="app-container">
@@ -18,11 +27,7 @@
             </div>
             <div class="self-care-container">
                 <h2>Today's Reminders</h2>
-                <ul id="self-care-list" class="self-care-list">
-                    <li><input type="checkbox" id="ate-breakfast"> <label for="ate-breakfast">Ate breakfast</label></li>
-                    <li><input type="checkbox" id="drank-water"> <label for="drank-water">Drank enough water</label></li>
-                    <li><input type="checkbox" id="took-meds"> <label for="took-meds">Took morning medicine</label></li>
-                </ul>
+                <ul id="self-care-list" class="self-care-list"></ul>
             </div>
         </div>
 
@@ -44,7 +49,7 @@
                 <div id="escalation-status" class="status-card">
                     <h2>Exception Alerts</h2>
                     <p class="status-text" id="escalation-status-text">All clear</p>
-                    <a id="call-parent-btn" class="call-button hidden" href="tel:12345678">Call Parent</a>
+                    <a id="call-parent-btn" class="call-button hidden" href="">Call Parent</a>
                 </div>
             </div>
         </div>
