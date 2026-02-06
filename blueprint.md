@@ -4,7 +4,8 @@ This Ambient Reassurance App is a web-based tool designed to provide peace of mi
 
 ## Overview of Features
 
-*   **Parent Dashboard**: A simple, accessible interface for the parent. It includes a large clock, prominent "I'm OK" and "I'm NOT OK" buttons, a voice command option, and a customizable list of daily self-care reminders.
+*   **"Guardian Angel" Banner**: The app now features a visually appealing banner with the title "Guardian Angel" and a calming, green forest background image from Pexels to create a reassuring atmosphere.
+*   **Parent Dashboard**: A simple, accessible interface for the parent. It includes a large clock, prominent emoji buttons (😊 for "I'm OK" and 😢 for "I'm NOT OK"), a voice command option, and a customizable list of daily self-care reminders.
 *   **Caregiver Dashboard**: A monitoring interface that provides an at-a-glance status of the parent, including their check-in status, routine patterns, self-care task completion, and any alerts that require action.
 *   **Multi-Language Support**: The entire application interface can be switched between English, Chinese (Simplified), Malay, and Tamil.
 *   **Voice Commands**: The parent can use their voice to check in by saying "I'm OK" or "I'm Not OK" in their selected language. The app provides real-time feedback on the voice command status.
@@ -15,7 +16,7 @@ This Ambient Reassurance App is a web-based tool designed to provide peace of mi
 
 ## Design and Style
 
-*   **Aesthetics**: The app uses a clean, modern design with a light and airy color palette (using the `oklch` color model for modern, vibrant colors). It features soft shadows, rounded corners, and clear typography to create a calming and intuitive user experience.
+*   **Aesthetics**: The app uses a clean, modern design with a light and airy color palette. It features a prominent "Guardian Angel" banner with a lush greenery image, soft shadows, rounded corners, and clear typography to create a calming and intuitive user experience.
 *   **Responsiveness**: The layout is fully responsive and adapts to different screen sizes, ensuring it works well on both desktop and mobile devices.
 *   **Interactivity**: Buttons and interactive elements provide clear visual feedback, such as animations and color changes, to acknowledge user actions.
 
@@ -23,10 +24,8 @@ This Ambient Reassurance App is a web-based tool designed to provide peace of mi
 
 This section outlines the plan for the latest round of updates.
 
-1.  **Fix Language Refresh Bug**: Addressed an issue where UI elements did not consistently update after a language change.
-2.  **Add Text-to-Speech (TTS)**: Implemented audio feedback for check-in actions.
-3.  **Implement Robust Voice Commands**: Upgraded the voice feature to a full command system with better feedback and error handling.
-4.  **Implement Human-Readable Location**: Replaced GPS coordinates with a user-friendly address from the OpenStreetMap API.
-5.  **Improve Location Error Handling**:
-    *   **Detailed Error Messages**: Instead of a generic "Location not available" message, the UI now displays specific reasons for failure (e.g., "Location permission was denied," "Request to get location timed out").
-    *   **Fix Button Locking Logic**: Corrected a flaw where the check-in buttons would become disabled even if the location lookup failed. The buttons now remain active on error, allowing the user to retry.
+1.  **Add "Guardian Angel" Banner**: A new banner section was added to the HTML and styled with a background image of a green forest from Pexels to enhance the app's theme.
+2.  **Implement Emoji Buttons**: The "I'm OK" and "I'm NOT OK" text on the buttons has been replaced with "😊" and "😢" emojis for a more intuitive visual interface. The text-to-speech functionality was preserved by creating separate translation keys for the spoken phrases.
+3.  **Improve Location Error Handling**:
+    *   **Detailed Error Messages**: The UI now displays specific reasons for location lookup failures.
+    *   **Fix Button Locking Logic**: The check-in buttons now remain active on error, allowing the user to retry.

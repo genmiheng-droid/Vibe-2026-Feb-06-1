@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const translations = {
         en: {
             appTitle: 'Ambient Reassurance App', parentTitle: 'Parent', caregiverTitle: 'Caregiver',
-            imOk: "I'm OK", imNotOk: "I'm NOT OK", recordAudio: 'Voice', listening: 'Listening...',
+            imOk: '😊', imNotOk: '😢', recordAudio: 'Voice', listening: 'Listening...',
+            spokenImOk: "I'm OK", spokenImNotOk: "I'm NOT OK",
             remindersTitle: "Today's Reminders", addTaskPlaceholder: 'Add a new reminder...', addTaskBtn: 'Add', deleteTaskBtn: 'Delete',
             aliveStatus: 'Alive & Okay', routineStatus: 'Routine Normal', selfCareStatus: 'Self-Care', escalationStatus: 'Exception Alerts',
             pending: 'Pending', confirmed: 'Confirmed', notOk: 'NOT OK', routineNormal: 'No unusual patterns',
@@ -69,7 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         zh: {
             appTitle: '环境安抚应用', parentTitle: '家长', caregiverTitle: '看护人',
-            imOk: '我很好', imNotOk: '我不好', recordAudio: '语音', listening: '听取中...',
+            imOk: '😊', imNotOk: '😢', recordAudio: '语音', listening: '听取中...',
+            spokenImOk: "我很好", spokenImNotOk: "我不好",
             remindersTitle: '今日提醒', addTaskPlaceholder: '添加新提醒...', addTaskBtn: '添加', deleteTaskBtn: '删除',
             aliveStatus: '存活并安好', routineStatus: '日常正常', selfCareStatus: '自我关怀', escalationStatus: '异常警报',
             pending: '待定', confirmed: '已确认', notOk: '不好', routineNormal: '无异常模式',
@@ -96,7 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         ms: {
             appTitle: 'Aplikasi Penenteram Persekitaran', parentTitle: 'Ibu Bapa', caregiverTitle: 'Penjaga',
-            imOk: 'Saya OK', imNotOk: 'Saya TIDAK OK', recordAudio: 'Suara', listening: 'Mendengar...',
+            imOk: '😊', imNotOk: '😢', recordAudio: 'Suara', listening: 'Mendengar...',
+            spokenImOk: "Saya OK", spokenImNotOk: "Saya TIDAK OK",
             remindersTitle: 'Peringatan Hari Ini', addTaskPlaceholder: 'Tambah peringatan baru...', addTaskBtn: 'Tambah', deleteTaskBtn: 'Padam',
             aliveStatus: 'Hidup & Sihat', routineStatus: 'Rutin Normal', selfCareStatus: 'Penjagaan Diri', escalationStatus: 'Makluman Pengecualian',
             pending: 'Menunggu', confirmed: 'Disahkan', notOk: 'TIDAK OK', routineNormal: 'Tiada corak luar biasa',
@@ -123,7 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         ta: {
             appTitle: 'சுற்றுச்சூழல் உறுதிமொழி செயலி', parentTitle: 'பெற்றோர்', caregiverTitle: 'பராமரிப்பாளர்',
-            imOk: 'நான் நலம்', imNotOk: 'நான் சரியில்லை', recordAudio: 'குரல்', listening: 'கேட்கிறது...',
+            imOk: '😊', imNotOk: '😢', recordAudio: 'குரல்', listening: 'கேட்கிறது...',
+            spokenImOk: "நான் நலம்", spokenImNotOk: "நான் சரியில்லை",
             remindersTitle: 'இன்றைய நினைவூட்டல்கள்', addTaskPlaceholder: 'புதிய நினைவூட்டலைச் சேர்க்கவும்...', addTaskBtn: 'சேர்', deleteTaskBtn: 'நீக்கு',
             aliveStatus: 'உயிருடன் & நலமாக', routineStatus: 'இயல்பு நிலை', selfCareStatus: 'சுய பாதுகாப்பு', escalationStatus: 'விதிவிலக்கு எச்சரிக்கைகள்',
             pending: 'நிலுவையில்', confirmed: 'உறுதிசெய்யப்பட்டது', notOk: 'சரியில்லை', routineNormal: 'அசாதாரண வடிவங்கள் இல்லை',
@@ -177,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isNotOk = aliveStatusText.classList.contains('not-ok');
         const alertIsActive = escalationStatusText.classList.contains('alert');
 
-        checkInBtn.textContent = checkedIn && !isNotOk ? lang.confirmed : lang.imOk;
+        checkInBtn.querySelector('span').textContent = checkedIn && !isNotOk ? lang.confirmed : lang.imOk;
         checkInBtn.disabled = checkedIn;
         notOkBtn.disabled = checkedIn;
         recordAudioBtn.disabled = checkedIn;
@@ -467,8 +471,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners & Initialization ---
     languageSelector.addEventListener('change', (e) => updateLanguage(e.target.value));
-    checkInBtn.addEventListener('click', () => { speak(translations[currentLanguage].imOk); handleCheckIn(); });
-    notOkBtn.addEventListener('click', () => { speak(translations[currentLanguage].imNotOk); handleNotOk(); });
+    checkInBtn.addEventListener('click', () => { speak(translations[currentLanguage].spokenImOk); handleCheckIn(); });
+    notOkBtn.addEventListener('click', () => { speak(translations[currentLanguage].spokenImNotOk); handleNotOk(); });
     addTaskBtn.addEventListener('click', addNewTask);
     newTaskInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addNewTask(); });
     recordAudioBtn.addEventListener('click', () => {

@@ -5,35 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-translate-key="appTitle">Ambient Reassurance App</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 </head>
 <body>
+    <div class="guardian-angel-banner">
+        <h1>Guardian Angel</h1>
+    </div>
+
     <div class="app-container">
-        <div id="parent-dashboard" class="dashboard">
+
+        <!-- Parent Dashboard -->
+        <div class="dashboard parent-dashboard">
             <div class="header-controls">
                 <h1 data-translate-key="parentTitle">Parent</h1>
                 <div class="language-selector-container">
                     <select id="language-selector">
                         <option value="en">English</option>
-                        <option value="zh">中文 (Simplified)</option>
+                        <option value="zh">中文</option>
                         <option value="ms">Bahasa Melayu</option>
                         <option value="ta">தமிழ்</option>
                     </select>
                 </div>
             </div>
-            <div id="clock" class="clock"></div>
+
+            <div class="clock" id="clock">10:30</div>
+
             <div class="button-group">
-                <button id="check-in-btn" class="main-button" data-translate-key="imOk">I'm OK</button>
-                <button id="not-ok-btn" class="main-button not-ok" data-translate-key="imNotOk">I'm NOT OK</button>
-                <button id="record-audio-btn" class="main-button record-btn">
-                    <svg class="mic-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+                <button class="main-button ok" id="check-in-btn">
+                    <span data-translate-key="imOk">I'm OK</span>
+                </button>
+                <button class="main-button not-ok" id="not-ok-btn">
+                    <span data-translate-key="imNotOk">I'm NOT OK</span>
+                </button>
+                <button class="main-button record-btn" id="record-audio-btn">
+                     <svg class="mic-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.49 6-3.31 6-6.72h-1.7z"/></svg>
                     <span data-translate-key="recordAudio">Voice</span>
                 </button>
             </div>
-            <p id="voice-transcript" class="voice-feedback"></p>
+             <div id="voice-transcript" class="voice-feedback"></div>
+
             <div class="self-care-container">
                 <h2 data-translate-key="remindersTitle">Today's Reminders</h2>
-                <ul id="self-care-list" class="self-care-list"></ul>
+                <ul id="self-care-list"></ul>
                 <div class="add-task-container">
                     <input type="text" id="new-task-input" data-translate-key-placeholder="addTaskPlaceholder" placeholder="Add a new reminder...">
                     <button id="add-task-btn" data-translate-key="addTaskBtn">Add</button>
@@ -41,32 +57,41 @@
             </div>
         </div>
 
-        <div id="caregiver-dashboard" class="dashboard">
+        <!-- Caregiver Dashboard -->
+        <div class="dashboard caregiver-dashboard">
             <h1 data-translate-key="caregiverTitle">Caregiver</h1>
+
             <div class="status-grid">
-                <div id="alive-status" class="status-card">
-                    <h2 data-translate-key="aliveStatus">Alive & Okay</h2>
+                <div class="status-card full-width" id="alive-status">
+                    <h2>
+                        <span data-translate-key="aliveStatus">Alive & Okay</span>
+                    </h2>
                     <p class="status-text" id="alive-status-text" data-translate-key="pending">Pending</p>
-                    <p id="check-in-details" class="details-text"></p>
+                    <p class="details-text" id="check-in-details"></p>
                 </div>
-                <div id="routine-status" class="status-card">
+
+                <div class="status-card" id="routine-status">
                     <h2 data-translate-key="routineStatus">Routine Normal</h2>
                     <p class="status-text" id="routine-status-text" data-translate-key="routineNormal">No unusual patterns</p>
                 </div>
-                <div id="self-care-status" class="status-card">
+
+                <div class="status-card" id="self-care-status">
                     <h2 data-translate-key="selfCareStatus">Self-Care</h2>
-                    <p class="status-text" id="self-care-status-text" data-translate-key="pending">Pending</p>
+                    <p class="status-text" id="self-care-status-text">No tasks yet</p>
                 </div>
-                <div id="escalation-status" class="status-card">
+
+                <div class="status-card full-width" id="escalation-status">
                     <h2 data-translate-key="escalationStatus">Exception Alerts</h2>
                     <p class="status-text" id="escalation-status-text" data-translate-key="allClear">All clear</p>
-                    <a id="call-parent-btn" class="call-button hidden" data-translate-key="callParentBtn">Call Parent</a>
+                     <a href="#" class="call-button hidden" id="call-parent-btn" data-translate-key="callParentBtn">Call Parent</a>
                 </div>
             </div>
         </div>
     </div>
-    <audio id="alert-sound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
-    <audio id="ping-sound" src="https://actions.google.com/sounds/v1/notifications/sms_received_one_shot.ogg" preload="auto"></audio>
+
+    <audio id="alert-sound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3" preload="auto"></audio>
+    <audio id="ping-sound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3" preload="auto"></audio>
+
     <script src="main.js"></script>
 </body>
 </html>
