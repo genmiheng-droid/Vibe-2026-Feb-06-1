@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- Configuration ---
+    const PARENT_PHONE_NUMBER = '12345678';
+    const CAREGIVER_PHONE_NUMBER = '87654321';
+
     // --- Element Selectors ---
     const checkInBtn = document.getElementById('check-in-btn');
     const notOkBtn = document.getElementById('not-ok-btn');
@@ -8,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const aliveStatusText = document.getElementById('alive-status-text');
     const selfCareStatusText = document.getElementById('self-care-status-text');
     const escalationStatusText = document.getElementById('escalation-status-text');
-    const callCaregiverBtn = document.getElementById('call-caregiver-btn');
+    const callParentBtn = document.getElementById('call-parent-btn');
     const alertSound = document.getElementById('alert-sound');
     const pingSound = document.getElementById('ping-sound');
 
@@ -37,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selfCareStatusText.classList.remove('completed');
         escalationStatusText.textContent = 'All clear';
         escalationStatusText.classList.remove('alert');
-        callCaregiverBtn.classList.add('hidden');
+        callParentBtn.classList.add('hidden');
 
         updateSelfCareStatus();
     }
@@ -68,9 +72,11 @@ document.addEventListener('DOMContentLoaded', () => {
         aliveStatusText.classList.add('not-ok');
         escalationStatusText.textContent = 'Action Required!';
         escalationStatusText.classList.add('alert');
-        callCaregiverBtn.classList.remove('hidden');
+        callParentBtn.classList.remove('hidden');
         alertSound.play();
-        window.location.href = 'tel:87654321'; // Automatically call caregiver
+        // Automatically send SMS to caregiver
+        const message = encodeURIComponent("Parent requires immediate attention. Please call them.");
+        window.location.href = `sms:${CAREGIVER_PHONE_NUMBER}?body=${message}`;
         checkInBtn.disabled = true;
         notOkBtn.disabled = true;
     });
@@ -118,12 +124,15 @@ document.addEventListener('DOMContentLoaded', () => {
             aliveStatusText.classList.add('not-ok');
             escalationStatusText.textContent = 'Check-in Missed';
             escalationStatusText.classList.add('alert');
-            callCaregiverBtn.classList.remove('hidden');
-            window.location.href = 'tel:87654321'; // Automatically call caregiver
+            callParentBtn.classList.remove('hidden');
+            // Automatically send SMS to caregiver
+            const message = encodeURIComponent("Parent missed their scheduled check-in. Please call them.");
+            window.location.href = `sms:${CAREGIVER_PHONE_NUMBER}?body=${message}`;
         }
     }
 
     // --- Initializations ---
+    callParentBtn.href = `tel:${PARENT_PHONE_NUMBER}`;
     resetState(); // Reset the app state on every page load
     updateClock();
     setInterval(updateClock, 1000);
