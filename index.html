@@ -1,14 +1,59 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambient Reassurance App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+    <div class="app-container">
+        <div id="parent-dashboard" class="dashboard">
+            <h1>Parent</h1>
+            <div id="clock" class="clock"></div>
+            <div class="button-group">
+                <button id="check-in-btn" class="main-button">I'm OK</button>
+                <button id="not-ok-btn" class="main-button not-ok">I'm NOT OK</button>
+            </div>
+            <div class="self-care-container">
+                <h2>Today's Reminders</h2>
+                <ul id="self-care-list" class="self-care-list">
+                    <li><input type="checkbox" id="ate-breakfast"> <label for="ate-breakfast">Ate breakfast</label></li>
+                    <li><input type="checkbox" id="drank-water"> <label for="drank-water">Drank enough water</label></li>
+                    <li><input type="checkbox" id="took-meds"> <label for="took-meds">Took morning medicine</label></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="caregiver-dashboard" class="dashboard">
+            <h1>Caregiver</h1>
+            <div class="status-grid">
+                <div id="alive-status" class="status-card">
+                    <h2>Alive & Okay</h2>
+                    <p class="status-text" id="alive-status-text">Pending</p>
+                </div>
+                <div id="routine-status" class="status-card">
+                    <h2>Routine Normal</h2>
+                    <p class="status-text" id="routine-status-text">No unusual patterns</p>
+                </div>
+                <div id="self-care-status" class="status-card">
+                    <h2>Self-Care</h2>
+                    <p class="status-text" id="self-care-status-text">Pending</p>
+                </div>
+                <div id="escalation-status" class="status-card">
+                    <h2>Exception Alerts</h2>
+                    <p class="status-text" id="escalation-status-text">All clear</p>
+                    <a id="call-caregiver-btn" class="call-button hidden" href="tel:87654321">Call Caregiver</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <audio id="alert-sound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
+    <audio id="ping-sound" src="https://actions.google.com/sounds/v1/notifications/sms_received_one_shot.ogg" preload="auto"></audio>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>

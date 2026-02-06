@@ -1,1 +1,173 @@
-/* Add styles here */
+/* General Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: oklch(98% 0.02 240);
+    color: oklch(25% 0.02 240);
+    margin: 0;
+    padding: 20px;
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"%3E%3Cpath d="M1 3h1v1H1V3zm2-2h1v1H3V1z" fill="%23000000" fill-opacity="0.05"%3E%3C/path%3E%3C/svg%3E');
+}
+
+.app-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.dashboard {
+    background-color: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: oklch(40% 0.15 260);
+    margin-top: 0;
+}
+
+h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: oklch(50% 0.1 250);
+    border-bottom: 2px solid oklch(90% 0.02 240);
+    padding-bottom: 10px;
+}
+
+/* Parent Dashboard */
+#parent-dashboard .clock {
+    font-size: 3.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: oklch(50% 0.1 250);
+    margin-bottom: 20px;
+}
+
+.button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+#parent-dashboard .main-button {
+    width: 100%;
+    padding: 25px 10px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
+    background-color: oklch(65% 0.2 150);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px oklch(65% 0.2 150 / 40%);
+    transition: all 0.3s ease;
+}
+
+#parent-dashboard .main-button.not-ok {
+    background-color: oklch(65% 0.25 25);
+    box-shadow: 0 5px 15px oklch(65% 0.25 25 / 40%);
+}
+
+#parent-dashboard .main-button:hover, #parent-dashboard .main-button:focus {
+    transform: translateY(-3px);
+}
+
+#parent-dashboard .main-button.not-ok:hover, #parent-dashboard .main-button.not-ok:focus {
+    background-color: oklch(70% 0.27 25);
+    box-shadow: 0 8px 25px oklch(70% 0.27 25 / 50%);
+}
+
+.self-care-list {
+    list-style: none;
+    padding: 0;
+    font-size: 1.4rem;
+}
+
+.self-care-list li {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid oklch(90% 0.02 240);
+}
+
+.self-care-list input[type="checkbox"] {
+    width: 25px;
+    height: 25px;
+    margin-right: 15px;
+}
+
+/* Caregiver Dashboard */
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.status-card {
+    background-color: oklch(99% 0.01 240);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+}
+
+.status-card h2 {
+    font-size: 1.5rem;
+    margin-top: 0;
+    border-bottom: none;
+}
+
+.status-text {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: oklch(50% 0.1 250);
+}
+
+#alive-status-text.confirmed {
+    color: oklch(65% 0.2 150);
+}
+
+#alive-status-text.not-ok {
+    color: oklch(65% 0.25 25);
+}
+
+#self-care-status-text.completed {
+    color: oklch(65% 0.2 150);
+}
+
+#escalation-status-text.alert {
+    color: oklch(65% 0.25 25);
+    font-weight: 700;
+}
+
+.call-button {
+    display: inline-block;
+    padding: 12px 20px;
+    margin-top: 15px;
+    background-color: oklch(65% 0.25 25);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px oklch(65% 0.25 25 / 40%);
+    transition: all 0.3s ease;
+}
+
+.call-button:hover {
+    background-color: oklch(70% 0.27 25);
+}
+
+.hidden {
+    display: none;
+}
+
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .app-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
